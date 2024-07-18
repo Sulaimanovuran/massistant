@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher, types
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils import executor
 from fuzzywuzzy import fuzz
 from decouple import config
@@ -29,8 +30,17 @@ def get_best_match(user_question):
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
-    await message.reply("Здравствуйте! Я бот-помощник по автокредитам. Задайте мне ваш вопрос.")
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(InlineKeyboardButton("Пройти курс", callback_data='course'))
+    keyboard.add(InlineKeyboardButton("Пройти тест", callback_data='test'))
 
+    await bot.send_message(
+        chat_id=message.chat.id,
+        text="Здравствуйте! Я бот-помощник по кредитам. Задайте мне ваш вопрос.",
+        reply_markup=keyboard
+    )
+
+    
 @dp.message_handler()
 async def handle_question(message: types.Message):
     user_question = message.text
